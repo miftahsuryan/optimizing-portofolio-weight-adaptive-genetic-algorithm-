@@ -1,7 +1,8 @@
 import pytest
 
-from src.compute_statistic.daily_return import calculate_daily_return
-
+from portfolio_optimization.compute_statistic.daily_return import (
+    calculate_daily_return
+)
 
 def test_daily_return_increases() -> None:
     # Arrange
