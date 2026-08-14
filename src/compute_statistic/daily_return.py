@@ -18,13 +18,13 @@ def calculate_daily_return(
     if not isinstance(current_price, (int, float)) or not isinstance(
         previous_price, (int, float)
     ):
-        raise TypeError("The data tpe should be float or int")
+        raise TypeError("Prices must be numeric values.")
         
     if current_price <= 0.0:
         raise ValueError("Current price must be greater than zero.")
 
     if previous_price <= 0.0:
-        raise ValueError("Current price must be greater than zero.")
+        raise ValueError("Previous price must be greater than zero.")
 
     daily_return = (current_price - previous_price) / previous_price
 
