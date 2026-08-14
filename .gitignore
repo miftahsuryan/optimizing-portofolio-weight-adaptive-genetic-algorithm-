@@ -1,24 +1,42 @@
-# Created by pytest automatically.
-# Python cache
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
+*$py.class
 
-# Pytest cache
+# Test, coverage, and type-checker caches
 .pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
 
-# Virtual environment
+# Virtual environments
 .venv/
 venv/
+env/
 
-# Jupyter
+# Packaging and build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Local environment configuration
+.env
+.env.*
+!.env.example
+
+# Jupyter temporary files
 .ipynb_checkpoints/
 
-# VS Code temporary file
+# Editor temporary files
 tempCodeRunnerFile.py
+*.swp
+*.swo
 
-# macOS
+# macOS metadata
 .DS_Store
 
 # Generated model artifacts
 models/
-
