@@ -14,6 +14,10 @@ def test_cli_success(
         "PRICE_DATA_PATH",
         "tests/fixtures/prices_valid.csv",
     )
+    monkeypatch.setenv(
+        "IDX30_CONSTITUENTS_PATH",
+        "tests/fixtures/idx30_constituents_valid.csv",
+    )
 
     result = main()
 
@@ -22,12 +26,17 @@ def test_cli_success(
     output = capsys.readouterr()
     assert output.err == ""
     assert output.out.splitlines() == [
-        "Dataset Summary",
+        "Consistent IDX30 Dataset Summary",
+        "Periods     : 3",
         "Rows        : 6",
         "Tickers     : 2",
         "Start date  : 2025-01-02",
         "End date    : 2025-01-06",
         "Missing     : 0",
+        "Portfolio Statistics",
+        "Return rows : 2",
+        "Assets      : 2",
+        "Covariance  : 2 x 2",
     ]
 
 

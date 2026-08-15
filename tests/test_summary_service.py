@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from portfolio_optimization.ingestion.load_csv import load_price_data
+from portfolio_optimization.ingestion.load_prices import load_price_data
 from portfolio_optimization.services.summary_service import (
     DatasetSummary,
     summarize_price_data,
