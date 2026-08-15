@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 
 from portfolio_optimization.exceptions import DataValidationError
-from portfolio_optimization.ingestion.load_csv import load_price_data
+from portfolio_optimization.ingestion.load_prices import load_price_data
 
 
 def test_load_price_data_returns_valid_dataframe() -> None:
