@@ -18,8 +18,8 @@ def test_compute_portfolio_statistics() -> None:
 
     assert isinstance(result, PortfolioStatistics)
     assert result.daily_returns.shape == (2, 2)
-    assert result.daily_returns.columns.tolist() == ["BBCA", "BBRI"]
-    assert result.mean_returns.index.tolist() == ["BBCA", "BBRI"]
+    assert result.daily_returns.columns.tolist() == ["AAA", "BBB"]
+    assert result.mean_returns.index.tolist() == ["AAA", "BBB"]
     assert result.covariance_matrix.shape == (2, 2)
 
 
@@ -29,14 +29,14 @@ def test_daily_returns_are_calculated_per_ticker() -> None:
 
     result = compute_portfolio_statistics(price_data)
 
-    expected_bbca = (9725.23423423 - 9675.12931233) / 9675.12931233
-    expected_bbri = (4120.23423423 - 4080.43523542) / 4080.43523542
+    expected_aaa = (105.0 - 100.0) / 100.0
+    expected_bbb = (190.0 - 200.0) / 200.0
     first_return_date = pd.Timestamp("2025-01-03")
     assert result.daily_returns.loc[
         first_return_date,
-        "BBCA",
-    ] == pytest.approx(expected_bbca)
+        "AAA",
+    ] == pytest.approx(expected_aaa)
     assert result.daily_returns.loc[
         first_return_date,
-        "BBRI",
-    ] == pytest.approx(expected_bbri)
+        "BBB",
+    ] == pytest.approx(expected_bbb)

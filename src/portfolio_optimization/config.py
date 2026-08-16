@@ -1,25 +1,27 @@
-import os
-from dataclasses import dataclass
 from pathlib import Path
 
-@dataclass(frozen=True)
-class AppConfig:
-    """Application Configuration"""
+from pydantic import ValidationError
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from portfolio_optimization.exceptions import ConfigurationError
+
+
+class AppConfig(BaseSettings):
     price_data_path: Path
-    idx30_constituents_path: Path
 
-def load_config() -> AppConfig:
-    """Load application configuration from environment variables"""
-    price_data_path = os.getenv(
-        "PRICE_DATA_PATH",
-        "data/idx30_close_prices_daily_2023-2026_raw.csv",
-    )
-    idx30_constituents_path = os.getenv(
-        "IDX30_CONSTITUENTS_PATH",
-        "data/List_IDX30_Lengkap_2022_2026.xlsx - Matriks 2022-2026.csv",
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_ignore_empty=True,
     )
 
-    return AppConfig(
-        price_data_path=Path(price_data_path),
-        idx30_constituents_path=Path(idx30_constituents_path),
-    )
+
+def load_config(
+    *,
+    env_file: str | Path | None = ".env",
+) -> AppConfig:
+    """Load validated settings from environment variables and an env file."""
+    try:
+        return AppConfig(_env_file=env_file)
+    except ValidationError as error:
+        raise ConfigurationError("Invalid application configuration.") from error

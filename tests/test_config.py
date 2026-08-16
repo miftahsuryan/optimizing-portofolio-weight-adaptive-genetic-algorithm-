@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from portfolio_optimization.config import load_config
+from portfolio_optimization.exceptions import ConfigurationError
 
 
 def test_load_config_uses_environment_path(
@@ -13,43 +14,22 @@ def test_load_config_uses_environment_path(
         "PRICE_DATA_PATH",
         "tests/fixtures/prices_valid.csv",
     )
-    monkeypatch.setenv(
-        "IDX30_CONSTITUENTS_PATH",
-        "tests/fixtures/idx30_constituents_valid.csv",
-    )
-
     # Act
-    config = load_config()
+    config = load_config(env_file=None)
 
     # Assert
     assert config.price_data_path == Path(
         "tests/fixtures/prices_valid.csv"
     )
-    assert config.idx30_constituents_path == Path(
-        "tests/fixtures/idx30_constituents_valid.csv"
-    )
 
 
-def test_load_config_uses_default_path(
+def test_load_config_raises_domain_error_when_path_is_missing(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    # Arrange
-    monkeypatch.delenv(
-        "PRICE_DATA_PATH",
-        raising=False,
-    )
-    monkeypatch.delenv(
-        "IDX30_CONSTITUENTS_PATH",
-        raising=False,
-    )
+    monkeypatch.delenv("PRICE_DATA_PATH", raising=False)
 
-    # Act
-    config = load_config()
-
-    # Assert
-    assert config.price_data_path == Path(
-        "data/idx30_close_prices_daily_2023-2026_raw.csv"
-    )
-    assert config.idx30_constituents_path == Path(
-        "data/List_IDX30_Lengkap_2022_2026.xlsx - Matriks 2022-2026.csv"
-    )
+    with pytest.raises(
+        ConfigurationError,
+        match="Invalid application configuration",
+    ):
+        load_config(env_file=None)
