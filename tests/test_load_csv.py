@@ -60,7 +60,7 @@ def test_load_price_data_rejects_invalid_date(tmp_path: Path) -> None:
     """An invalid date value should be rejected."""
     invalid_date_csv = tmp_path / "prices_invalid_date.csv"
     invalid_date_csv.write_text(
-        "Date,ticker,Close\nnot-a-date,BBCA,9675\n",
+        "Date,ticker,Close\nnot-a-date,AAA,100\n",
         encoding="utf-8",
     )
 
@@ -75,7 +75,7 @@ def test_load_price_data_rejects_invalid_close(tmp_path: Path) -> None:
     """A non-numeric closing price should be rejected."""
     invalid_close_csv = tmp_path / "prices_invalid_close.csv"
     invalid_close_csv.write_text(
-        "Date,ticker,Close\n2025-01-02,BBCA,invalid\n",
+        "Date,ticker,Close\n2025-01-02,AAA,invalid\n",
         encoding="utf-8",
     )
 
@@ -94,7 +94,7 @@ def test_load_price_data_rejects_non_positive_close(
     """Zero and negative closing prices should be rejected."""
     invalid_close_csv = tmp_path / "prices_non_positive_close.csv"
     invalid_close_csv.write_text(
-        f"Date,ticker,Close\n2025-01-02,BBCA,{close}\n",
+        f"Date,ticker,Close\n2025-01-02,AAA,{close}\n",
         encoding="utf-8",
     )
 

@@ -6,7 +6,6 @@ import pandas as pd
 @dataclass(frozen=True)
 class PortfolioStatistics:
     """Statistical inputs required by portfolio optimization."""
-
     daily_returns: pd.DataFrame
     mean_returns: pd.Series
     covariance_matrix: pd.DataFrame
