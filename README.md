@@ -13,12 +13,14 @@ behavior is determined by the price data supplied through configuration.
 - display dataset statistics through a CLI;
 - expose a FastAPI health endpoint;
 - expose a typed portfolio-analysis endpoint backed by an application service;
+- manage Assets and historical PriceReadings through typed service boundaries;
+- execute the notebook-derived Standard Genetic Algorithm (SGA);
+- persist OptimizationRuns and Allocations atomically in memory;
 - return a consistent 422 error contract for expected domain failures;
 - verify behavior using automated tests and neutral fixtures.
 
-SGA and AGA portfolio optimization remain planned work. The current application
-prepares optimization-ready statistical inputs but does not select portfolio
-weights yet.
+AGA remains planned work. SGA selects long-only portfolio weights whose total
+is one and whose maximum allocation per asset is configurable.
 
 ## Workflow
 
@@ -36,9 +38,11 @@ Daily returns per asset
         v
 Mean returns + covariance matrix
         |
-        +----> CLI
-        +----> future optimization service
-        +----> future API endpoints
+        v
+Standard Genetic Algorithm
+        |
+        v
+OptimizationRun + Allocations
 ```
 
 ## Project structure
@@ -48,10 +52,14 @@ Mean returns + covariance matrix
 ├── apps/
 │   └── api/                         # FastAPI application
 ├── data/                            # Local research datasets
-├── notebook_raw/                    # Original research notebook
+├── docs/                            # Architecture and relational design
+├── notebooks/                       # Research and experiment notebooks
 ├── src/portfolio_optimization/
-│   ├── compute_statistic/           # Returns, means, and covariance
+│   ├── analytics/                   # Returns, means, and covariance
+│   ├── domain/                      # Entities grouped by domain concept
 │   ├── ingestion/                   # Historical price loading
+│   ├── optimization/                # Standard Genetic Algorithm
+│   ├── repositories/                # Contracts and in-memory storage
 │   ├── services/                    # Application workflows
 │   ├── cli.py                       # Command-line interface
 │   ├── config.py                    # Validated environment configuration
@@ -67,9 +75,9 @@ Mean returns + covariance matrix
 - pip
 - a virtual environment
 
-Runtime dependencies are declared in `pyproject.toml` and include pandas,
-FastAPI, Uvicorn, and Pydantic Settings. Development dependencies include pytest
-and HTTPX.
+Runtime dependencies are declared in `pyproject.toml` and include NumPy,
+pandas, FastAPI, Uvicorn, and Pydantic Settings. Development dependencies
+include pytest and HTTPX.
 
 ## Installation
 
@@ -155,6 +163,22 @@ Current health response:
 
 Portfolio analysis endpoint: <http://127.0.0.1:8000/portfolio/analysis>
 
+Production-boundary endpoints:
+
+```text
+POST   /assets
+GET    /assets
+POST   /assets/{asset_id}/readings
+POST   /assets/{asset_id}/readings/batch
+POST   /optimizations/sga
+GET    /optimizations
+GET    /optimizations/{run_id}
+```
+
+SGA uses aligned PriceReadings in the requested inclusive date range. At least
+three aligned prices are required. Each result records its parameters, seed,
+fitness, convergence generation, runtime, metrics, and per-asset allocations.
+
 Expected domain and input-data failures use this response shape with HTTP 422:
 
 ```json
@@ -204,8 +228,7 @@ valid price dataset.
 
 - complete missing-value and duplicate-observation policies;
 - add configurable date ranges and time-based dataset splitting;
-- implement portfolio constraints and fitness calculations;
-- modularize SGA and AGA;
+- modularize AGA using the same optimization boundary;
 - add backtesting and evaluation;
 - expose an optimization API endpoint;
 - add deployment configuration after the API contract stabilizes.

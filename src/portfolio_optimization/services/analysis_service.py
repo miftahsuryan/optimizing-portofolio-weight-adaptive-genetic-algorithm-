@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from portfolio_optimization.compute_statistic.portfolio_statistics import (
+from portfolio_optimization.analytics.portfolio_statistics import (
     PortfolioStatistics,
     compute_portfolio_statistics,
 )

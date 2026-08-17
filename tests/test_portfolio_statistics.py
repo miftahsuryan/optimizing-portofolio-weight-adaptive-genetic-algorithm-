@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from portfolio_optimization.compute_statistic.portfolio_statistics import (
+from portfolio_optimization.analytics.portfolio_statistics import (
     PortfolioStatistics,
     compute_portfolio_statistics,
 )

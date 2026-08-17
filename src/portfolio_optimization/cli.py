@@ -5,7 +5,7 @@ from portfolio_optimization.ingestion.load_prices import load_price_data
 from portfolio_optimization.services.summary_service import (
     summarize_price_data,
 )
-from portfolio_optimization.compute_statistic.portfolio_statistics import (
+from portfolio_optimization.analytics.portfolio_statistics import (
     compute_portfolio_statistics,
 )
 from portfolio_optimization.exceptions import PortfolioOptimizationError
