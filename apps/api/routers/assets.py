@@ -1,6 +1,8 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Response, status
+from typing import Annotated
+
+from fastapi import APIRouter, Query, Response, status
 
 from apps.api.dependencies import AssetServiceDependency
 from apps.api.schemas import (
@@ -43,8 +45,26 @@ def create_asset(
 )
 def list_assets(
     service: AssetServiceDependency,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=100)] = 50,
+    symbol: Annotated[str | None, Query(min_length=1)] = None,
+    currency: Annotated[
+        str | None,
+        Query(min_length=3, max_length=3, pattern=r"^[A-Za-z]{3}$"),
+    ] = None,
 ):
-    return service.list_assets()
+    assets = service.list_assets()
+    if symbol is not None:
+        normalized_symbol = symbol.strip().upper()
+        assets = tuple(
+            asset for asset in assets if asset.symbol == normalized_symbol
+        )
+    if currency is not None:
+        normalized_currency = currency.upper()
+        assets = tuple(
+            asset for asset in assets if asset.currency == normalized_currency
+        )
+    return assets[offset : offset + limit]
 
 
 @router.get(

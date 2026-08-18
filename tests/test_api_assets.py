@@ -74,6 +74,30 @@ def test_list_assets_returns_created_assets(
     assert response.json() == [first, second]
 
 
+def test_list_assets_applies_filters_and_pagination(
+    client: TestClient,
+) -> None:
+    create_asset(client)
+    second = create_asset(
+        client,
+        symbol="BBRI",
+        name="Bank Rakyat Indonesia",
+    )
+
+    filtered = client.get("/assets?symbol=bbri&currency=idr")
+    paged = client.get("/assets?offset=1&limit=1")
+
+    assert filtered.status_code == 200
+    assert filtered.json() == [second]
+    assert paged.json() == [second]
+
+
+def test_list_assets_rejects_unbounded_limit(client: TestClient) -> None:
+    response = client.get("/assets?limit=101")
+
+    assert response.status_code == 422
+
+
 def test_get_asset_returns_existing_asset(
     client: TestClient,
 ) -> None:

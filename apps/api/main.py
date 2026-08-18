@@ -12,6 +12,7 @@ from apps.api.schemas import (
     PortfolioAnalysisResponse,
 )
 from portfolio_optimization.config import load_config
+from portfolio_optimization.database import ping_database
 from portfolio_optimization.exceptions import (
     DuplicateEntityError,
     EntityNotFoundError,
@@ -83,6 +84,13 @@ async def file_not_found_error_handler(
 @app.get("/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health/db")
+def database_health_check() -> dict[str, str]:
+    """Verify that the configured database accepts a real query."""
+    ping_database()
+    return {"status": "ok", "database": "reachable"}
 
 
 @app.get(

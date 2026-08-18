@@ -167,6 +167,40 @@ def test_list_readings_returns_chronological_data(
     assert response.json() == [earlier, later]
 
 
+def test_list_readings_applies_time_filter_and_pagination(
+    client: TestClient,
+) -> None:
+    asset = create_asset(client)
+    create_reading(
+        client,
+        asset["id"],
+        observed_at="2026-08-16T09:00:00Z",
+    )
+    expected = create_reading(
+        client,
+        asset["id"],
+        observed_at="2026-08-17T09:00:00Z",
+    )
+    create_reading(
+        client,
+        asset["id"],
+        observed_at="2026-08-18T09:00:00Z",
+    )
+
+    response = client.get(
+        f"/assets/{asset['id']}/readings",
+        params={
+            "observed_from": "2026-08-17T00:00:00Z",
+            "observed_to": "2026-08-18T00:00:00Z",
+            "offset": 0,
+            "limit": 1,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json() == [expected]
+
+
 def test_create_reading_batch(client: TestClient) -> None:
     asset = create_asset(client)
 
