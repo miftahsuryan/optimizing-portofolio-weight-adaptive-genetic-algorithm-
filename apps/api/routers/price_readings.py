@@ -1,6 +1,8 @@
+from datetime import datetime
+from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Query, Response, status
 
 from apps.api.dependencies import PriceReadingServiceDependency
 from apps.api.schemas import (
@@ -71,8 +73,25 @@ def create_reading_batch(
 def list_readings(
     asset_id: UUID,
     service: PriceReadingServiceDependency,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=1000)] = 100,
+    observed_from: Annotated[datetime | None, Query()] = None,
+    observed_to: Annotated[datetime | None, Query()] = None,
 ):
-    return service.list_readings(asset_id)
+    readings = service.list_readings(asset_id)
+    if observed_from is not None:
+        readings = tuple(
+            reading
+            for reading in readings
+            if reading.observed_at >= observed_from
+        )
+    if observed_to is not None:
+        readings = tuple(
+            reading
+            for reading in readings
+            if reading.observed_at <= observed_to
+        )
+    return readings[offset : offset + limit]
 
 
 @router.get(

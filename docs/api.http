@@ -1,0 +1,13 @@
+@baseUrl = http://127.0.0.1:8000
+
+### Process liveness
+GET {{baseUrl}}/health
+
+### PostgreSQL smoke check
+GET {{baseUrl}}/health/db
+
+### Assets: bounded page and exact, case-insensitive filters
+GET {{baseUrl}}/assets?offset=0&limit=20&symbol=bbca&currency=idr
+
+### Readings: inclusive UTC time window and bounded page
+GET {{baseUrl}}/assets/00000000-0000-0000-0000-000000000000/readings?observed_from=2026-08-01T00:00:00Z&observed_to=2026-08-18T23:59:59Z&offset=0&limit=100

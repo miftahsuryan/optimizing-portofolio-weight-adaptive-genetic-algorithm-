@@ -102,10 +102,16 @@ Configure the local data paths:
 
 ```env
 PRICE_DATA_PATH=data/prices.csv
+DATABASE_URL=postgresql+psycopg://portfolio:portfolio@localhost:5432/portfolio
+DATABASE_ECHO=false
 ```
 
 `PRICE_DATA_PATH` is required. Every ticker in that dataset is included in the
 portfolio-statistics calculation.
+
+`DATABASE_URL` selects the PostgreSQL database. Apply the baseline schema with
+`alembic upgrade head`. `/health` checks process liveness, while `/health/db`
+runs `SELECT 1` against the configured database.
 
 The local `.env` file is ignored by Git. `.env.example` documents the available
 settings without containing machine-specific values or secrets.
@@ -174,6 +180,10 @@ POST   /optimizations/sga
 GET    /optimizations
 GET    /optimizations/{run_id}
 ```
+
+List endpoints use bounded pagination. `GET /assets` accepts `offset`, `limit`,
+`symbol`, and `currency`; the readings endpoint accepts `offset`, `limit`,
+`observed_from`, and `observed_to`. Time boundaries are inclusive.
 
 SGA uses aligned PriceReadings in the requested inclusive date range. At least
 three aligned prices are required. Each result records its parameters, seed,
