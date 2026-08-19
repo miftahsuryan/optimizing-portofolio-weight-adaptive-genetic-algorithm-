@@ -48,3 +48,12 @@ A chronological summary of the project's development.
 - Added the initial Alembic migration.
 - Added an ADR and HTTP API collection.
 - Added production API behavior and database smoke tests.
+
+## 2026-08-19 — Milestone v0.1 vertical slice
+
+- Added a Next.js page with typed fetch calls and explicit component state.
+- Added the persisted PortfolioBrief API and PostgreSQL migration.
+- Added deterministic risk-profile AI-stub responses.
+- Verified fresh-client persistence, the complete Python suite, production web
+  build, dependency audit, and captured the milestone screenshot.
+- Documented demo steps, acceptance evidence, and the retrospective.

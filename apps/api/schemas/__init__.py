@@ -1,4 +1,8 @@
 from apps.api.schemas.analysis import PortfolioAnalysisResponse
+from apps.api.schemas.briefs import (
+    PortfolioBriefCreateRequest,
+    PortfolioBriefResponse,
+)
 from apps.api.schemas.assets import (
     AssetCreateRequest,
     AssetResponse,
@@ -26,6 +30,8 @@ __all__ = [
     "ErrorResponse",
     "OptimizationRunResponse",
     "PortfolioAnalysisResponse",
+    "PortfolioBriefCreateRequest",
+    "PortfolioBriefResponse",
     "PriceReadingBatchCreateRequest",
     "PriceReadingCreateRequest",
     "PriceReadingResponse",

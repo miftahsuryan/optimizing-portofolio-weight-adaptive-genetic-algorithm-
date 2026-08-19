@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
+from apps.api.routers.briefs import router as briefs_router
 from apps.api.routers.assets import router as assets_router
 from apps.api.routers.price_readings import (
     router as price_readings_router,
@@ -24,6 +26,13 @@ from portfolio_optimization.services.analysis_service import (
 
 
 app = FastAPI(title="Portfolio Optimization API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
+app.include_router(briefs_router)
 app.include_router(assets_router)
 app.include_router(price_readings_router)
 app.include_router(optimizations_router)

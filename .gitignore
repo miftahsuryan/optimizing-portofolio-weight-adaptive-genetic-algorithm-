@@ -21,6 +21,9 @@ build/
 dist/
 *.egg-info/
 *.egg
+node_modules/
+.next/
+*.tsbuildinfo
 
 # Local environment configuration
 .env
