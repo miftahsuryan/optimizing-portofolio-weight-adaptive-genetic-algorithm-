@@ -1,6 +1,10 @@
+from collections.abc import Iterator
 from typing import Annotated
 
 from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from portfolio_optimization.database import get_session
 
 from portfolio_optimization.repositories.in_memory import (
     InMemoryAssetRepository,
@@ -23,6 +27,11 @@ from portfolio_optimization.services.optimization_service import (
 _asset_repository = InMemoryAssetRepository()
 _price_reading_repository = InMemoryPriceReadingRepository()
 _optimization_repository = InMemoryOptimizationRepository()
+
+
+def get_database_session() -> Iterator[Session]:
+    """Expose the transaction-scoped database session to API routes."""
+    yield from get_session()
 
 
 def get_asset_repository() -> AssetRepository:

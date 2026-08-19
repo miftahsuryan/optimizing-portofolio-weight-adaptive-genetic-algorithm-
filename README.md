@@ -18,6 +18,8 @@ behavior is determined by the price data supplied through configuration.
 - persist OptimizationRuns and Allocations atomically in memory;
 - return a consistent 422 error contract for expected domain failures;
 - verify behavior using automated tests and neutral fixtures.
+- create and reload persisted portfolio briefs through the v0.1 Next.js slice;
+- return deterministic AI-stub guidance for each brief risk profile.
 
 AGA remains planned work. SGA selects long-only portfolio weights whose total
 is one and whose maximum allocation per asset is configurable.
@@ -169,6 +171,28 @@ Current health response:
 
 Portfolio analysis endpoint: <http://127.0.0.1:8000/portfolio/analysis>
 
+## Run the v0.1 web slice
+
+Start PostgreSQL and apply both migrations before starting the API:
+
+```bash
+docker compose up -d postgres
+.venv/bin/alembic upgrade head
+.venv/bin/uvicorn apps.api.main:app --reload
+```
+
+Then start the Next.js page:
+
+```bash
+cd apps/web
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+Open <http://127.0.0.1:3000>. See the complete demo, screenshot, acceptance
+evidence, and retrospective in [docs/milestone-v0.1.md](docs/milestone-v0.1.md).
+
 Production-boundary endpoints:
 
 ```text
@@ -179,6 +203,8 @@ POST   /assets/{asset_id}/readings/batch
 POST   /optimizations/sga
 GET    /optimizations
 GET    /optimizations/{run_id}
+POST   /briefs
+GET    /briefs
 ```
 
 List endpoints use bounded pagination. `GET /assets` accepts `offset`, `limit`,
