@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 
 from portfolio_optimization.database import get_session
 
-from portfolio_optimization.repositories.in_memory import (
-    InMemoryAssetRepository,
-    InMemoryOptimizationRepository,
-    InMemoryPriceReadingRepository,
+from portfolio_optimization.repositories.postgres import (
+    PostgresAssetRepository,
+    PostgresOptimizationRepository,
+    PostgresPriceReadingRepository,
 )
 from portfolio_optimization.repositories.protocols import (
     AssetRepository,
@@ -24,19 +24,16 @@ from portfolio_optimization.services.optimization_service import (
     OptimizationService,
 )
 
-_asset_repository = InMemoryAssetRepository()
-_price_reading_repository = InMemoryPriceReadingRepository()
-_optimization_repository = InMemoryOptimizationRepository()
-
-
 def get_database_session() -> Iterator[Session]:
     """Expose the transaction-scoped database session to API routes."""
     yield from get_session()
 
 
-def get_asset_repository() -> AssetRepository:
+def get_asset_repository(
+    session: Annotated[Session, Depends(get_database_session)],
+) -> AssetRepository:
     """Return the application Asset repository."""
-    return _asset_repository
+    return PostgresAssetRepository(session)
 
 
 def get_asset_service(
@@ -55,9 +52,11 @@ AssetServiceDependency = Annotated[
 ]
 
 
-def get_price_reading_repository() -> PriceReadingRepository:
+def get_price_reading_repository(
+    session: Annotated[Session, Depends(get_database_session)],
+) -> PriceReadingRepository:
     """Return the application PriceReading repository."""
-    return _price_reading_repository
+    return PostgresPriceReadingRepository(session)
 
 
 def get_price_reading_service(
@@ -83,9 +82,11 @@ PriceReadingServiceDependency = Annotated[
 ]
 
 
-def get_optimization_repository() -> OptimizationRepository:
+def get_optimization_repository(
+    session: Annotated[Session, Depends(get_database_session)],
+) -> OptimizationRepository:
     """Return the application Optimization repository."""
-    return _optimization_repository
+    return PostgresOptimizationRepository(session)
 
 
 def get_optimization_service(
