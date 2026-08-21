@@ -5,9 +5,11 @@ from decimal import Decimal
 from uuid import UUID
 
 from sqlalchemy import (
+    CheckConstraint,
     Date,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     String,
@@ -31,6 +33,11 @@ class AssetRow(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
+    __table_args__ = (
+        CheckConstraint("currency = upper(currency)", name="ck_assets_currency_upper"),
+        CheckConstraint("symbol = upper(symbol)", name="ck_assets_symbol_upper"),
+    )
+
 
 class PriceReadingRow(Base):
     __tablename__ = "price_readings"
@@ -44,9 +51,11 @@ class PriceReadingRow(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     __table_args__ = (
+        CheckConstraint("close > 0", name="ck_price_readings_close_positive"),
         UniqueConstraint(
             "asset_id", "observed_at", name="uq_reading_asset_time"
         ),
+        Index("ix_price_readings_asset_observed_at", "asset_id", "observed_at"),
     )
 
 
@@ -74,6 +83,10 @@ class OptimizationRunRow(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
+    __table_args__ = (
+        CheckConstraint("start_date <= end_date", name="ck_runs_date_range"),
+    )
+
 
 class AllocationRow(Base):
     __tablename__ = "allocations"
@@ -90,6 +103,9 @@ class AllocationRow(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     __table_args__ = (
+        CheckConstraint(
+            "weight >= 0 AND weight <= 1", name="ck_allocations_weight"
+        ),
         UniqueConstraint(
             "optimization_run_id",
             "asset_id",
@@ -106,3 +122,11 @@ class PortfolioBriefRow(Base):
     risk_profile: Mapped[str] = mapped_column(String(16))
     ai_summary: Mapped[str] = mapped_column(String(500))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        CheckConstraint(
+            "risk_profile IN ('conservative', 'balanced', 'growth')",
+            name="ck_portfolio_briefs_risk_profile",
+        ),
+        Index("ix_portfolio_briefs_created_at", "created_at"),
+    )
