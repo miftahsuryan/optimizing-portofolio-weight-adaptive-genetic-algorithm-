@@ -115,6 +115,9 @@ portfolio-statistics calculation.
 `alembic upgrade head`. `/health` checks process liveness, while `/health/db`
 runs `SELECT 1` against the configured database.
 
+The table, constraint, index, and migration-chain notes are documented in
+[docs/database-schema.md](docs/database-schema.md).
+
 The local `.env` file is ignored by Git. `.env.example` documents the available
 settings without containing machine-specific values or secrets.
 

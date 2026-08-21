@@ -57,3 +57,11 @@ A chronological summary of the project's development.
 - Verified fresh-client persistence, the complete Python suite, production web
   build, dependency audit, and captured the milestone screenshot.
 - Documented demo steps, acceptance evidence, and the retrospective.
+
+## 2026-08-21 — Core schema migrations
+
+- Aligned SQLAlchemy metadata with the database checks, indexes, foreign keys,
+  uniqueness, and nullability encoded by the Alembic revisions.
+- Connected Alembic autogeneration to the application model metadata.
+- Documented the physical schema and revision chain.
+- Added an automated empty-database upgrade/downgrade/upgrade test.
